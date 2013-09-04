@@ -1,11 +1,22 @@
 <head>
   <title>floorplan</title>
-  <link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Permanent+Marker|Merriweather+Sans' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
+  {{> header}}
   {{> floorplan}}
 </body>
+
+<template name="header">
+  <header>
+    <img src="/q42-logo.svg" alt="Q42">
+    <h1>Floorplan</h1>
+    <div id="login">{{loginButtons}}</div>
+  </header>
+</header>
+
+</template>
 
 <template name="floorplan">
     <div id="qers">

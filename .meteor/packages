@@ -9,3 +9,6 @@ insecure
 preserve-inputs
 stylus
 coffeescript
+accounts-base
+accounts-ui
+accounts-google
