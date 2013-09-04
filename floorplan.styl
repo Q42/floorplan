@@ -1,0 +1,40 @@
+html, body
+    margin 0
+    overflow hidden
+    height 100%
+    font-family "Helvetica Neue", Helvetica, Arial, sans-serif
+    -webkit-user-select none
+
+    &.mousedown
+        cursor -webkit-grabbing
+
+#floorplan
+    width 100%
+
+#qers
+    background black
+    height 120px
+    overflow hidden
+
+    .qer
+        width 50px
+        height 50px
+        background #fe9 -webkit-gradient(radial, 20% 10%, 0, 50% 10%, 80, from(rgba(255,250,220,1)), to(rgba(255,238,253,0)));
+        display table
+        overflow hidden
+        float left
+        margin 4px
+        cursor -webkit-grab
+
+        span
+            display table-cell
+            max-width 50px
+            overflow hidden
+            vertical-align middle
+            text-align center
+            font 11px/1 "Permanent Marker", "Helvetica Neue", Helvetica, Arial, sans-serif
+
+        &.dragging
+            position absolute
+            z-index 999
+            box-shadow 2px 2px 4px rgba(0,0,0,.4)

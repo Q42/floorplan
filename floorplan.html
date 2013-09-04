@@ -1,0 +1,21 @@
+<head>
+  <title>floorplan</title>
+  <link href='http://fonts.googleapis.com/css?family=Permanent+Marker' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  {{> floorplan}}
+</body>
+
+<template name="floorplan">
+    <div id="qers">
+        {{> qers}}
+    </div>
+    <img src="/floorplan.png" id="floorplan" alt="">
+</template>
+
+<template name="qers">
+    {{#each qer}}
+        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" {{#if dragging}}style="top: {{posY}}px; left: {{posX}}px"{{/if}}><span>{{forename}}</span></div>
+    {{/each}}
+</template>
