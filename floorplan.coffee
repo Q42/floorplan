@@ -1,6 +1,9 @@
-@Employees = new Meteor.Collection "employees"
+
 
 if Meteor.isClient
+    @q42nl = DDP.connect "http://q42.nl"
+    @Employees = new Meteor.Collection "Employees", @q42nl
+    @q42nl.subscribe "employees"
 
     headerHeight = 120 + 42
 
@@ -19,10 +22,10 @@ if Meteor.isClient
 
         forename
 
-    Template.qers.dragging = -> @pos.x isnt 0 and @pos.y isnt 0
+    Template.qers.dragging = -> @floorplan.x isnt 0 and @floorplan.y isnt 0
 
-    Template.qers.posX = -> @pos.x * Session.get("windowWidth")
-    Template.qers.posY = -> @pos.y * Session.get("windowWidth") + headerHeight
+    Template.qers.posX = -> @floorplan.x * Session.get("windowWidth")
+    Template.qers.posY = -> @floorplan.y * Session.get("windowWidth") + headerHeight
 
     Template.floorplan.events
         "mousemove, touchmove": (evt, template) ->
@@ -30,7 +33,7 @@ if Meteor.isClient
             imageW = Session.get("windowWidth")
             newX = (evt.pageX / imageW)
             newY = if evt.pageY < headerHeight then 0 else (evt.pageY - headerHeight) / imageW
-            Meteor.call "updatePosition", Session.get("draggingId"), newX, newY
+            q42nl.call "updatePosition", Session.get("draggingId"), newX, newY
             evt.preventDefault() # prevent phones from scrolling while touchmoving
         "mouseup, touchend": -> Session.set "draggingId", null
 
