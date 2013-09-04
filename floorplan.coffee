@@ -13,7 +13,7 @@ if Meteor.isClient
     Template.qers.forename = ->
         forename = @name.split(" ")[0]
 
-        results = Employees.find name: new RegExp("^" + forename + "\b", "i")
+        results = Employees.find name: new RegExp("^" + forename + "\\b", "i")
         if results.count() > 1
             forename += _.last(@name.split(" "))[0]
 
