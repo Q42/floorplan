@@ -27,6 +27,6 @@
 
 <template name="qers">
     {{#each qer}}
-        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" {{#if dragging}}style="top: {{posY}}px; left: {{posX}}px"{{/if}}><span>{{forename}}</span></div>
+        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" style="{{#if dragging}}top: {{posY}}px; left: {{posX}}px;{{/if}} background-image: url(http://q42.nl/images/employees/{{avatar_static}})"></div>
     {{/each}}
 </template>

@@ -20,12 +20,14 @@ if Meteor.isClient
         if results.count() > 1
             forename += _.last(@name.split(" "))[0]
 
-        forename
+        forename.toLowerCase()
 
     Template.qers.dragging = -> @floorplan.x isnt 0 and @floorplan.y isnt 0
 
     Template.qers.posX = -> @floorplan.x * Session.get("windowWidth")
     Template.qers.posY = -> @floorplan.y * Session.get("windowWidth") + headerHeight
+
+    Template.qers.avatar_static = -> @imageStatic or @handle + "zw.jpg"
 
     Template.floorplan.events
         "mousemove, touchmove": (evt, template) ->
