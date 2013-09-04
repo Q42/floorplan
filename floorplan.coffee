@@ -1,4 +1,4 @@
-@Qers = new Meteor.Collection "qers"
+@Employees = new Meteor.Collection "employees"
 
 if Meteor.isClient
 
@@ -8,12 +8,12 @@ if Meteor.isClient
         Session.setDefault "draggingId", null
         Session.setDefault "windowWidth", $(window).width()
 
-    Template.qers.qer = -> @Qers.find({}, sort: name: 1)
+    Template.qers.qer = -> @Employees.find({}, sort: name: 1)
 
     Template.qers.forename = ->
         forename = @name.split(" ")[0]
 
-        results = Qers.find name: new RegExp("^" + forename + "\b", "i")
+        results = Employees.find name: new RegExp("^" + forename + "\b", "i")
         if results.count() > 1
             forename += _.last(@name.split(" "))[0]
 
