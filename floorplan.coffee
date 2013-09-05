@@ -31,7 +31,7 @@ if Meteor.isClient
 
     Template.floorplan.events
         "mousemove, touchmove": (evt, template) ->
-            return unless Session.get("draggingId") or Meteor.user()
+            return unless Session.get("draggingId") and Meteor.user() and Meteor.user()?.services?.google?.email?.match(/@q42.nl$/)
             imageW = Session.get("windowWidth")
             newX = (evt.pageX / imageW)
             newY = if evt.pageY < headerHeight then 0 else (evt.pageY - headerHeight) / imageW
