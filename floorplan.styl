@@ -34,14 +34,20 @@ header
 
 #floorplan img
     width 100%
+    opacity .5
+    -webkit-filter grayscale(1)
 
 nav
     display inline-block
 
     a
-        color white
+        color #999
         font-size smaller
         margin 0 10px 0 0
+
+        &.selected
+            color white
+            text-decoration none
 
 #qers
     background #2a2a2a
@@ -60,7 +66,7 @@ nav
         margin 4px
         cursor -webkit-grab
         background-size cover
-        -webkit-filter sepia(.7)
+        border-radius 50%
 
         span
             display table-cell
@@ -73,5 +79,5 @@ nav
         &.dragging
             position absolute
             z-index 999
-            box-shadow 2px 2px 4px rgba(0,0,0,.4)
+            box-shadow 0 0 4px white
             margin: -25px

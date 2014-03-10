@@ -19,6 +19,8 @@ if Meteor.isClient
             Session.set "selectedLocation", $(evt.target).data("location")
             evt.preventDefault()
 
+    Template.header.selected = (str) -> "selected" if Session.equals "selectedLocation", str
+
     Template.qers.qer = -> @Employees.find({"$or": [{"floorplan.location": Session.get("selectedLocation")}, {"floorplan.y": 0}]}, sort: name: 1)
 
     Template.qers.dragging = -> @floorplan.x isnt 0 and @floorplan.y isnt 0
@@ -26,7 +28,7 @@ if Meteor.isClient
     Template.qers.posX = -> @floorplan.x * Session.get("windowWidth")
     Template.qers.posY = -> @floorplan.y * Session.get("windowWidth") + headerHeight
 
-    Template.qers.avatar_static = -> @imageStatic or @handle + "zw.jpg"
+    Template.qers.avatar_static = -> @imageAnimated or (@handle + "gif.gif")
 
     Template.floorplan.floorplan = -> "floorplan-" + Session.get("selectedLocation")
 
