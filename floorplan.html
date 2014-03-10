@@ -12,6 +12,11 @@
   <header>
     <img src="/q42-logo.svg" alt="Q42">
     <h1>Floorplan</h1>
+    <nav id="locations">
+      <a href="#q070" data-location="q070">Den Haag</a>
+      <a href="#q020-bg" data-location="q020-bg">Amsterdam - begane grond</a>
+      <a href="#q020-1" data-location="q020-1">Amsterdam - 1e verdieping</a>
+    </nav>
     <div id="login">{{loginButtons}}</div>
   </header>
 </header>
@@ -22,11 +27,13 @@
     <div id="qers">
         {{> qers}}
     </div>
-    <img src="/floorplan.png" id="floorplan" alt="">
+    <div id="floorplan">
+      <img src="/{{floorplan}}.png" alt="">
+    </div>
 </template>
 
 <template name="qers">
     {{#each qer}}
-        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" style="{{#if dragging}}top: {{posY}}px; left: {{posX}}px;{{/if}} background-image: url(http://q42.nl/images/employees/{{avatar_static}})"></div>
+        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" style="{{#if dragging}}top: {{posY}}px; left: {{posX}}px;{{/if}} background-image: url(http://static.q42.nl/images/employees/{{avatar_static}})"></div>
     {{/each}}
 </template>

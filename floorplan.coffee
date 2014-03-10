@@ -1,4 +1,6 @@
-
+Accounts.config
+    restrictCreationByEmailDomain: "q42.nl"
+    loginExpirationInDays: null
 
 if Meteor.isClient
     @q42nl = DDP.connect "http://q42.nl"
@@ -8,10 +10,16 @@ if Meteor.isClient
     headerHeight = 120 + 42
 
     Meteor.startup ->
+        Session.setDefault "selectedLocation", "q070"
         Session.setDefault "draggingId", null
         Session.setDefault "windowWidth", $(window).width()
 
-    Template.qers.qer = -> @Employees.find({}, sort: name: 1)
+    Template.header.events
+        "click nav a": (evt) ->
+            Session.set "selectedLocation", $(evt.target).data("location")
+            evt.preventDefault()
+
+    Template.qers.qer = -> @Employees.find({"$or": [{"floorplan.location": Session.get("selectedLocation")}, {"floorplan.y": 0}]}, sort: name: 1)
 
     Template.qers.dragging = -> @floorplan.x isnt 0 and @floorplan.y isnt 0
 
@@ -20,13 +28,15 @@ if Meteor.isClient
 
     Template.qers.avatar_static = -> @imageStatic or @handle + "zw.jpg"
 
+    Template.floorplan.floorplan = -> "floorplan-" + Session.get("selectedLocation")
+
     Template.floorplan.events
         "mousemove, touchmove": (evt, template) ->
             return unless Session.get("draggingId") and Meteor.user()?.services?.google?.email?.match(/@q42.nl$/)
             imageW = Session.get("windowWidth")
             newX = (evt.pageX / imageW)
             newY = if evt.pageY < headerHeight then 0 else (evt.pageY - headerHeight) / imageW
-            q42nl.call "updatePosition", Session.get("draggingId"), newX, newY
+            q42nl.call "updatePosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation")
             evt.preventDefault() # prevent phones from scrolling while touchmoving
         "mouseup, touchend": -> Session.set "draggingId", null
 
