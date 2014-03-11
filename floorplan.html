@@ -1,5 +1,5 @@
 <head>
-  <title>floorplan</title>
+  <title>Floorplan</title>
   <link href='http://fonts.googleapis.com/css?family=Permanent+Marker|Merriweather+Sans' rel='stylesheet' type='text/css'>
 </head>
 
@@ -13,12 +13,20 @@
     <img src="/q42-logo.svg" alt="Q42">
     <h1>Floorplan</h1>
     <nav id="locations">
+      {{#if currentUser}}
+        <a class="button add" href="#">Add partner</a>
+      {{/if}}
       <a href="#q070" data-location="q070" class="{{selected "q070"}}">Den Haag</a>
-      <a href="#q020-bg" data-location="q020-bg" class="{{selected "q020-bg"}}">Amsterdam - begane grond</a>
-      <a href="#q020-1" data-location="q020-1" class="{{selected "q020-1"}}">Amsterdam - 1e verdieping</a>
+      <a href="#q020bg" data-location="q020bg" class="{{selected "q020bg"}}">Amsterdam - begane grond</a>
+      <a href="#q020boven" data-location="q020boven" class="{{selected "q020boven"}}">Amsterdam - 1e verdieping</a>
     </nav>
-    <div id="login">{{loginButtons}}</div>
+    <div id="login">
+      {{loginButtons}}
+    </div>
   </header>
+  {{#if showCreatePartnerForm}}
+    {{> createPartner}}
+  {{/if}}
 </header>
 
 </template>
@@ -26,6 +34,7 @@
 <template name="floorplan">
     <div id="qers">
         {{> qers}}
+        {{> partners}}
     </div>
     <div id="floorplan">
       <img src="/{{floorplan}}.png" alt="">
@@ -34,6 +43,22 @@
 
 <template name="qers">
     {{#each qer}}
-        <div title="{{name}}" class="qer {{#if dragging}}dragging{{/if}}" style="{{#if dragging}}top: {{posY}}px; left: {{posX}}px;{{/if}} background-image: url(http://static.q42.nl/images/employees/{{avatar_static}})"></div>
+        <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url(http://static.q42.nl/images/employees/{{image}})"></div>
     {{/each}}
+</template>
+
+<template name="partners">
+  {{#each partner}}
+    <div title="{{name}}" class="qer partner {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}top: {{posY}}px; left: {{posX}}px;{{/if}}"><span>{{initials}}</span></div>
+  {{/each}}
+</template>
+
+<template name="createPartner">
+  <div id="createObject" class="partner">
+    <form>
+      <p>Add someone to the office(s)!</p>
+      <p><input type="text" placeholder="Name" id="partner-name"></p>
+      <p><input type="submit" value="Add" class="button" id="add"> <input type="reset" value="Cancel" id="cancel"></p>
+    </form>
+  </div>
 </template>
