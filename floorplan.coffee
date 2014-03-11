@@ -2,7 +2,6 @@ Accounts.config
     restrictCreationByEmailDomain: "q42.nl"
     loginExpirationInDays: null
 
-@Postits  = new Meteor.Collection "postits"
 @Partners = new Meteor.Collection "partners"
 
 if Meteor.isClient
@@ -83,9 +82,6 @@ if Meteor.isClient
 
 
 if Meteor.isServer
-
-    Meteor.startup ->
-        Postits.remove {}
 
     Meteor.methods
         createPartner: (name) ->
