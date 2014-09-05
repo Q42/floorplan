@@ -21,14 +21,12 @@
       <a href="#q020boven" data-location="q020boven" class="{{selected "q020boven"}}">Amsterdam - 1e verdieping</a>
     </nav>
     <div id="login">
-      {{loginButtons}}
+      {{> loginButtons}}
     </div>
   </header>
   {{#if showCreatePartnerForm}}
     {{> createPartner}}
   {{/if}}
-</header>
-
 </template>
 
 <template name="floorplan">
