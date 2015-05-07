@@ -21,14 +21,12 @@
       <a href="#q020boven" data-location="q020boven" class="{{selected "q020boven"}}">Amsterdam - 1e verdieping</a>
     </nav>
     <div id="login">
-      {{loginButtons}}
+      {{> loginButtons}}
     </div>
   </header>
   {{#if showCreatePartnerForm}}
     {{> createPartner}}
   {{/if}}
-</header>
-
 </template>
 
 <template name="floorplan">
@@ -43,7 +41,7 @@
 
 <template name="qers">
     {{#each qer}}
-        <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url(http://static.q42.nl/images/employees/{{image}})"></div>
+        <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url({{image}})"></div>
     {{/each}}
 </template>
 

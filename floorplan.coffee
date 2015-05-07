@@ -29,14 +29,14 @@ if Meteor.isClient
     Template.header.selected = (str) -> "selected" if Session.equals "selectedLocation", str
     Template.header.showCreatePartnerForm = -> Session.equals "createPartner", yes
 
-    Template.qers.qer = -> @Employees.find {}, sort: name: 1
+    Template.qers.qer = -> Employees.find {}, sort: name: 1
     Template.qers.dragging = -> Session.equals("dragging", yes)
     Template.qers.positioning = -> @floorplan[Session.get("selectedLocation")]?.x isnt 0 and @floorplan[Session.get("selectedLocation")]?.y isnt 0
     Template.qers.posX = -> (@floorplan[Session.get("selectedLocation")]?.x * Session.get("windowWidth")) or 0
     Template.qers.posY = -> (@floorplan[Session.get("selectedLocation")]?.y * Session.get("windowWidth") - 50 + headerHeight) or 0
-    Template.qers.image = -> @imageAnimated or (@handle + "gif.gif")
+    Template.qers.image = -> "http://static.q42.nl/images/employees/" + (@imageAnimated or (@handle + ".gif"))
 
-    Template.partners.partner = -> @Partners.find {}, sort: name: 1
+    Template.partners.partner = -> Partners.find {}, sort: name: 1
     Template.partners.dragging = -> Session.equals("dragging", yes)
     Template.partners.positioning = -> @floorplan[Session.get("selectedLocation")]?.x isnt 0 and @floorplan[Session.get("selectedLocation")]?.y isnt 0
     Template.partners.posX = -> (@floorplan[Session.get("selectedLocation")]?.x * Session.get("windowWidth")) or 0
