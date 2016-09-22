@@ -1,16 +1,17 @@
 <head>
   <title>Floorplan</title>
-  <link href='http://fonts.googleapis.com/css?family=Permanent+Marker|Merriweather+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Permanent+Marker|Merriweather+Sans' rel='stylesheet'
+        type='text/css'/>
 </head>
 
 <body>
-  {{> header}}
-  {{> floorplan}}
+{{> header}}
+{{> floorplan}}
 </body>
 
 <template name="header">
   <header>
-    <img src="/q42-logo.svg" alt="Q42">
+    <img src="/q42-logo.svg" alt="Q42"/>
     <h1>Floorplan</h1>
     <nav id="locations">
       {{#if currentUser}}
@@ -21,35 +22,35 @@
       <a href="#q020boven" data-location="q020boven" class="{{selected "q020boven"}}">Amsterdam - 1e verdieping</a>
     </nav>
     <div id="login">
-      {{loginButtons}}
+      {{> loginButtons}}
     </div>
   </header>
   {{#if showCreatePartnerForm}}
     {{> createPartner}}
   {{/if}}
-</header>
-
 </template>
 
 <template name="floorplan">
-    <div id="qers">
-        {{> qers}}
-        {{> partners}}
-    </div>
-    <div id="floorplan">
-      <img src="/{{floorplan}}.png" alt="">
-    </div>
+  <div id="qers">
+    {{> qers}}
+    {{> partners}}
+  </div>
+  <div id="floorplan">
+    <img src="/{{floorplan}}.png" alt=""/>
+  </div>
 </template>
 
 <template name="qers">
-    {{#each qer}}
-        <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url(http://static.q42.nl/images/employees/{{image}})"></div>
-    {{/each}}
+  {{#each qer}}
+    <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}"
+         style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url({{gravatar}}?default=monsterid)"></div>
+  {{/each}}
 </template>
 
 <template name="partners">
   {{#each partner}}
-    <div title="{{name}}" class="qer partner {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}" style="{{#if positioning}}top: {{posY}}px; left: {{posX}}px;{{/if}}"><span>{{initials}}</span></div>
+    <div title="{{name}}" class="qer partner {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}"
+         style="{{#if positioning}}top: {{posY}}px; left: {{posX}}px;{{/if}}"><span>{{initials}}</span></div>
   {{/each}}
 </template>
 

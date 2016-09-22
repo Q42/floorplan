@@ -1,0 +1,1 @@
+this.Partners = new Meteor.Collection("partners");
