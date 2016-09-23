@@ -27,6 +27,10 @@ Meteor.publish('floorplan.location', function(allUsersList) {
   return FloorplanLocation.find({});
 });
 
+Meteor.publish('partners.location', function() {
+  return Partners.find({});
+});
+
 function createAllFloorplans(allUsersList) {
   _.each(allUsersList, (userId) => {
     const result = FloorplanLocation.findOne(userId);
@@ -37,14 +41,14 @@ function createAllFloorplans(allUsersList) {
 }
 
 function createFloorplan(userId) {
-  var localFloorplan = _.clone(floorplan);
-  localFloorplan._id = userId;
-  FloorplanLocation.insert(localFloorplan);
+  var obj ={};
+  obj._id = userId;
+  obj.floorplan = _.clone(floorplan);
+  FloorplanLocation.insert(obj);
 }
 
 Meteor.methods({
   createPartner: function (name) {
-    var floorplan;
     if (!Meteor.userId()) {
       return;
     }
@@ -58,6 +62,7 @@ Meteor.methods({
     if (!Meteor.userId()) {
       return;
     }
+
     obj = {};
     obj["floorplan." + loc] = {};
     obj["floorplan." + loc].x = x;
@@ -66,12 +71,25 @@ Meteor.methods({
       $set: obj
     });
   },
-  removePartner: function (name) {
+  removePartner: function (id) {
     if (!Meteor.userId()) {
       return;
     }
     return Partners.remove({
-      name: name
+      _id: id
+    });
+  },
+  updateQerPosition: function (id, x, y, loc) {
+    var obj;
+    if (!Meteor.userId()) {
+      return;
+    }
+    obj = {};
+    obj["floorplan." + loc] = {};
+    obj["floorplan." + loc].x = x;
+    obj["floorplan." + loc].y = y;
+    return FloorplanLocation.update(id, {
+      $set: obj
     });
   }
 });

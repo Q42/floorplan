@@ -43,7 +43,7 @@
 <template name="qers">
   {{#each qer}}
     <div title="{{name}}" class="qer {{#if positioning}}positioning{{/if}} {{#if dragging}}dragging{{/if}}"
-         style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url({{gravatar}}?default=monsterid)"></div>
+         style="{{#if positioning}}-webkit-transform: translateY({{posY}}px) translateX({{posX}}px);{{/if}} background-image: url({{gravatar}}?default=monsterid);"></div>
   {{/each}}
 </template>
 

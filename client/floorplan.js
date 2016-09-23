@@ -1,4 +1,4 @@
-var headerHeight = 120 + 50;
+var headerHeight = 180 + 50;
 
 Accounts.ui.config({
   requestOfflineToken: {
@@ -20,6 +20,7 @@ CompanyApi.subscribe("employees.all", null, {
   Meteor.subscribe('floorplan.location', listOfIds);
 });
 
+Meteor.subscribe('partners.location');
 
 Meteor.startup(function () {
   Session.setDefault("createPartner", false);
@@ -53,8 +54,11 @@ Template.header.helpers({
 
 
 Template.qers.events({
-  "mousedown .qer, touchstart .qer": function (evt) {
+  "mousedown .qer, touchstart .qer": function () {
     return Session.set("draggingId", this._id);
+  },
+  "dblclick" : function() {
+    Meteor.call("updateQerPosition", this._id, 0, 0, Session.get("selectedLocation"));
   }
 });
 
@@ -71,26 +75,25 @@ Template.qers.helpers({
   },
   positioning: function () {
     var ref, ref1;
-    const floorplan = FloorplanLocation.findOne(this._id) || {};
+    var floorplan = FloorplanLocation.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
     const selectedLocation = Session.get("selectedLocation");
     return ((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) !== 0 && ((ref1 = floorplan[selectedLocation]) != null ? ref1.y : void 0) !== 0;
   },
   posX: function () {
     var ref;
-    const floorplan = FloorplanLocation.findOne(this._id);
-    if (!floorplan) {
-      return 0;
-    }
+    var floorplan = FloorplanLocation.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
+
     const windowWidth = Session.get("windowWidth");
     const selectedLocation = Session.get("selectedLocation");
     return (((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) * windowWidth) || 0;
   },
   posY: function () {
     var ref;
-    const floorplan = FloorplanLocation.findOne(this._id);
-    if (!floorplan) {
-      return 0;
-    }
+    var floorplan = FloorplanLocation.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
+
     const windowWidth = Session.get("windowWidth");
     const selectedLocation = Session.get("selectedLocation");
     return (((ref = floorplan[selectedLocation]) != null ? ref.y : void 0) * windowWidth - 50 + headerHeight) || 0;
@@ -99,8 +102,13 @@ Template.qers.helpers({
 
 
 Template.partners.events({
-  "mousedown .qer, touchstart .qer": function (evt) {
+  "mousedown .partner, touchstart .partner": function () {
     return Session.set("draggingId", this._id);
+  },
+  "dblclick" : function() {
+    if (confirm("Wil je deze partner verwijderen?")) {
+      Meteor.call("removePartner", this._id)
+    }
   }
 });
 
@@ -117,15 +125,28 @@ Template.partners.helpers({
   },
   positioning: function () {
     var ref, ref1;
-    return ((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) !== 0 && ((ref1 = floorplan[Session.get("selectedLocation")]) != null ? ref1.y : void 0) !== 0;
+    var floorplan = Partners.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
+    const selectedLocation = Session.get("selectedLocation");
+    return ((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) !== 0 && ((ref1 = floorplan[selectedLocation]) != null ? ref1.y : void 0) !== 0;
   },
   posX: function () {
     var ref;
-    return (((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) * Session.get("windowWidth")) || 0;
+    var floorplan = Partners.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
+
+    const windowWidth = Session.get("windowWidth");
+    const selectedLocation = Session.get("selectedLocation");
+    return (((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) * windowWidth) || 0;
   },
   posY: function () {
     var ref;
-    return (((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.y : void 0) * Session.get("windowWidth") + headerHeight) || 0;
+    var floorplan = Partners.findOne(this._id);
+    floorplan = floorplan ? floorplan.floorplan : {};
+
+    const windowWidth = Session.get("windowWidth");
+    const selectedLocation = Session.get("selectedLocation");
+    return (((ref = floorplan[selectedLocation]) != null ? ref.y : void 0) * windowWidth + headerHeight) || 0;
   },
   initials: function () {
     return _.map(this.name.split(" "), function (w) {
@@ -144,12 +165,14 @@ Template.floorplan.events({
     if (!Meteor.userId()) {
       return;
     }
-    imageW = Session.get("windowWidth");
-    newX = evt.pageX / imageW;
-    newY = evt.pageY < headerHeight ? 0 : (evt.pageY - headerHeight) / imageW;
+
     if (Session.get("draggingId")) {
+      imageW = Session.get("windowWidth");
+      newX = evt.pageX / imageW;
+      newY = evt.pageY < headerHeight ? 0 : (evt.pageY - headerHeight) / imageW;
+
       if (Employees.findOne(Session.get("draggingId"))) {
-        q42nl.call("updatePosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
+        Meteor.call("updateQerPosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
       } else {
         Meteor.call("updatePartnerPosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
       }
