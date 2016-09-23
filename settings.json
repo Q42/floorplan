@@ -2,7 +2,7 @@
   "galaxy.meteor.com": {
     "env": {
       "ROOT_URL": "https://floorplan.q42.com",
-      "MONGO_URL": "mongodb://floorplanadmin:KzrNc[fZ2vch83K@.Rk8@lamppost.15.mongolayer.com:10237,lamppost.14.mongolayer.com:10260/floorplan?replicaSet=set-561d18a8c5d0c2f3ea00111e",
+      "MONGO_URL": "mongodb://[username]:[password]@lamppost.15.mongolayer.com:10237,lamppost.14.mongolayer.com:10260/floorplan?replicaSet=set-561d18a8c5d0c2f3ea00111e",
       "NODE_ENV": "production",
       "TZ": "Europe/Amsterdam"
     }
@@ -15,5 +15,5 @@
     }
   },
   "googleClientId": "128013473384-ckqi27s8oc6n0mtakhsoaikdjnq9ckal.apps.googleusercontent.com",
-  "googleSecret": "mFaFIkYpAi_V98uJJ3Vh3Q3_"
+  "googleSecret": "[secret]"
 }
