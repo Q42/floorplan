@@ -10,9 +10,6 @@ blaze-html-templates@1.0.4    # Compile .html files into Meteor Blaze views
 reactive-var@1.0.10            # Reactive variable for tracker
 tracker@1.1.0                 # Meteor's client-side reactive programming library
 
-# standard-app-packages@1.0.9
-autopublish@1.0.7
-insecure@1.0.7
 stylus@2.513.5
 
 accounts-base@1.2.11

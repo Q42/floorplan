@@ -1,1 +1,2 @@
-this.Partners = new Meteor.Collection("partners");
+Partners = new Mongo.Collection("partners");
+FloorplanLocation = new Mongo.Collection("floorplanLocation");

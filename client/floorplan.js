@@ -1,8 +1,4 @@
-var headerHeight;
-
-//this.Employees = new Meteor.Collection("Employees", this.q42nl);
-//this.q42nl = DDP.connect("http://q42.nl");
-//this.q42nl.subscribe("employees");
+var headerHeight = 120 + 50;
 
 Accounts.ui.config({
   requestOfflineToken: {
@@ -19,10 +15,11 @@ CompanyApi.subscribe("employees.all", null, {
     shortName: 1,
     gravatar: 1
   }
+}, function () {
+  const listOfIds = _.pluck(Employees.find({}).fetch(), '_id');
+  Meteor.subscribe('floorplan.location', listOfIds);
 });
 
-
-headerHeight = 120 + 50;
 
 Meteor.startup(function () {
   Session.setDefault("createPartner", false);
@@ -31,6 +28,7 @@ Meteor.startup(function () {
   Session.setDefault("draggingId", null);
   return Session.setDefault("windowWidth", $(window).width());
 });
+
 Template.header.events({
   "click .add": function (evt) {
     evt.preventDefault();
@@ -53,6 +51,13 @@ Template.header.helpers({
   }
 });
 
+
+Template.qers.events({
+  "mousedown .qer, touchstart .qer": function (evt) {
+    return Session.set("draggingId", this._id);
+  }
+});
+
 Template.qers.helpers({
   qer: function () {
     return Employees.find({}, {
@@ -61,26 +66,43 @@ Template.qers.helpers({
       }
     });
   },
-  image: function () {
-    return this.handle + "gif.gif";
+  dragging: function () {
+    return Session.equals("dragging", true);
+  },
+  positioning: function () {
+    var ref, ref1;
+    const floorplan = FloorplanLocation.findOne(this._id) || {};
+    const selectedLocation = Session.get("selectedLocation");
+    return ((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) !== 0 && ((ref1 = floorplan[selectedLocation]) != null ? ref1.y : void 0) !== 0;
+  },
+  posX: function () {
+    var ref;
+    const floorplan = FloorplanLocation.findOne(this._id);
+    if (!floorplan) {
+      return 0;
+    }
+    const windowWidth = Session.get("windowWidth");
+    const selectedLocation = Session.get("selectedLocation");
+    return (((ref = floorplan[selectedLocation]) != null ? ref.x : void 0) * windowWidth) || 0;
+  },
+  posY: function () {
+    var ref;
+    const floorplan = FloorplanLocation.findOne(this._id);
+    if (!floorplan) {
+      return 0;
+    }
+    const windowWidth = Session.get("windowWidth");
+    const selectedLocation = Session.get("selectedLocation");
+    return (((ref = floorplan[selectedLocation]) != null ? ref.y : void 0) * windowWidth - 50 + headerHeight) || 0;
   }
 });
 
-Template.qers.dragging = function () {
-  return Session.equals("dragging", true);
-};
-Template.qers.positioning = function () {
-  var ref, ref1;
-  return ((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) !== 0 && ((ref1 = this.floorplan[Session.get("selectedLocation")]) != null ? ref1.y : void 0) !== 0;
-};
-Template.qers.posX = function () {
-  var ref;
-  return (((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) * Session.get("windowWidth")) || 0;
-};
-Template.qers.posY = function () {
-  var ref;
-  return (((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.y : void 0) * Session.get("windowWidth") - 50 + headerHeight) || 0;
-};
+
+Template.partners.events({
+  "mousedown .qer, touchstart .qer": function (evt) {
+    return Session.set("draggingId", this._id);
+  }
+});
 
 Template.partners.helpers({
   partner: function () {
@@ -89,47 +111,30 @@ Template.partners.helpers({
         name: 1
       }
     });
-  }
-});
-
-Template.partners.dragging = function () {
-  return Session.equals("dragging", true);
-};
-Template.partners.positioning = function () {
-  var ref, ref1;
-  return ((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) !== 0 && ((ref1 = this.floorplan[Session.get("selectedLocation")]) != null ? ref1.y : void 0) !== 0;
-};
-Template.partners.posX = function () {
-  var ref;
-  return (((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) * Session.get("windowWidth")) || 0;
-};
-Template.partners.posY = function () {
-  var ref;
-  return (((ref = this.floorplan[Session.get("selectedLocation")]) != null ? ref.y : void 0) * Session.get("windowWidth") + headerHeight) || 0;
-};
-Template.partners.initials = function () {
-  return _.map(this.name.split(" "), function (w) {
-    return w[0];
-  }).join("").toUpperCase();
-};
-
-Template.floorplan.helpers({
-  floorplan: function () {
-    return "floorplan-" + Session.get("selectedLocation");
-  }
-});
-
-Template.createPartner.events({
-  "click #add": function (evt) {
-    Meteor.call("createPartner", $("#partner-name").val());
-    evt.preventDefault();
-    $("#partner-name").val("");
-    return Session.set("createPartner", false);
   },
-  "click #cancel": function () {
-    return Session.set("createPartner", false);
+  dragging: function () {
+    return Session.equals("dragging", true);
+  },
+  positioning: function () {
+    var ref, ref1;
+    return ((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) !== 0 && ((ref1 = floorplan[Session.get("selectedLocation")]) != null ? ref1.y : void 0) !== 0;
+  },
+  posX: function () {
+    var ref;
+    return (((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.x : void 0) * Session.get("windowWidth")) || 0;
+  },
+  posY: function () {
+    var ref;
+    return (((ref = floorplan[Session.get("selectedLocation")]) != null ? ref.y : void 0) * Session.get("windowWidth") + headerHeight) || 0;
+  },
+  initials: function () {
+    return _.map(this.name.split(" "), function (w) {
+      return w[0];
+    }).join("").toUpperCase();
   }
 });
+
+
 Template.floorplan.events({
   "mouseup, touchend": function () {
     return Session.set("draggingId", null);
@@ -152,16 +157,25 @@ Template.floorplan.events({
     }
   }
 });
-Template.qers.events({
-  "mousedown .qer, touchstart .qer": function (evt) {
-    return Session.set("draggingId", this._id);
+
+Template.floorplan.helpers({
+  floorplan: function () {
+    return "floorplan-" + Session.get("selectedLocation");
   }
 });
-Template.partners.events({
-  "mousedown .qer, touchstart .qer": function (evt) {
-    return Session.set("draggingId", this._id);
+
+Template.createPartner.events({
+  "click #add": function (evt) {
+    Meteor.call("createPartner", $("#partner-name").val());
+    evt.preventDefault();
+    $("#partner-name").val("");
+    return Session.set("createPartner", false);
+  },
+  "click #cancel": function () {
+    return Session.set("createPartner", false);
   }
 });
+
 $(window).resize(function () {
   return Session.set("windowWidth", $(window).width());
 });
