@@ -17,6 +17,7 @@ CompanyApi.subscribe("employees.all", null, {
   }
 }, function () {
   const listOfIds = _.pluck(Employees.find({}).fetch(), '_id');
+  console.log('listOfIds:', listOfIds.length);
   Meteor.subscribe('floorplan.location', listOfIds);
 });
 
@@ -58,7 +59,7 @@ Template.qers.events({
     return Session.set("draggingId", this._id);
   },
   "dblclick" : function() {
-    Meteor.call("updateQerPosition", this._id, 0, 0, Session.get("selectedLocation"));
+    updateQerPosition(this._id, 0, 0, Session.get("selectedLocation"));
   }
 });
 
@@ -106,8 +107,14 @@ Template.partners.events({
     return Session.set("draggingId", this._id);
   },
   "dblclick" : function() {
-    if (confirm("Wil je deze partner verwijderen?")) {
-      Meteor.call("removePartner", this._id)
+    const p = Partners.findOne(this._id);
+
+    if (p.floorplan[Session.get("selectedLocation")].y === 0) {
+      if (confirm("Wil je deze partner verwijderen?")) {
+        Meteor.call("removePartner", this._id)
+      }
+    } else {
+      updatePartnerPosition(this._id, 0, 0, Session.get("selectedLocation"));
     }
   }
 });
@@ -172,9 +179,9 @@ Template.floorplan.events({
       newY = evt.pageY < headerHeight ? 0 : (evt.pageY - headerHeight) / imageW;
 
       if (Employees.findOne(Session.get("draggingId"))) {
-        Meteor.call("updateQerPosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
+        updateQerPosition(Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
       } else {
-        Meteor.call("updatePartnerPosition", Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
+        updatePartnerPosition(Session.get("draggingId"), newX, newY, Session.get("selectedLocation"));
       }
       return evt.preventDefault();
     }
@@ -198,6 +205,35 @@ Template.createPartner.events({
     return Session.set("createPartner", false);
   }
 });
+
+function updateQerPosition (id, x, y, loc) {
+  var obj;
+  if (!Meteor.userId()) {
+    return;
+  }
+  obj = {};
+  obj["floorplan." + loc] = {};
+  obj["floorplan." + loc].x = x;
+  obj["floorplan." + loc].y = y;
+  return FloorplanLocation.update(id, {
+    $set: obj
+  });
+}
+
+function updatePartnerPosition (id, x, y, loc) {
+  var obj;
+  if (!Meteor.userId()) {
+    return;
+  }
+
+  obj = {};
+  obj["floorplan." + loc] = {};
+  obj["floorplan." + loc].x = x;
+  obj["floorplan." + loc].y = y;
+  return Partners.update(id, {
+    $set: obj
+  });
+}
 
 $(window).resize(function () {
   return Session.set("windowWidth", $(window).width());

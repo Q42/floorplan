@@ -13,12 +13,42 @@ const floorplan = {
   }
 };
 
+Meteor.startup(function() {
+  FloorplanLocation.allow({
+    insert: function (userId) {
+      return userId
+    },
+    update: function (userId) {
+      return userId
+    }
+  });
+
+  Partners.allow({
+    insert: function (userId) {
+      return userId
+    },
+    update: function (userId) {
+      return userId
+    }
+  });
+
+
+  FloorplanLocation.deny({
+    remove() { return true; },
+  });
+
+  Partners.deny({
+    remove() { return true; },
+  });
+});
+
 Meteor.publish('floorplan.location', function(allUsersList) {
   if (!this.userId) {
     return this.ready();
   }
 
   const numberOfFloorplans = FloorplanLocation.find({_id : { $in: allUsersList}}).fetch();
+  console.log('floorplan.location check:', numberOfFloorplans.length, allUsersList.length);
   if (numberOfFloorplans.length < allUsersList.length) {
     //some floorplans are missing
     createAllFloorplans(allUsersList);
@@ -57,39 +87,12 @@ Meteor.methods({
       floorplan: floorplan
     });
   },
-  updatePartnerPosition: function (id, x, y, loc) {
-    var obj;
-    if (!Meteor.userId()) {
-      return;
-    }
-
-    obj = {};
-    obj["floorplan." + loc] = {};
-    obj["floorplan." + loc].x = x;
-    obj["floorplan." + loc].y = y;
-    return Partners.update(id, {
-      $set: obj
-    });
-  },
   removePartner: function (id) {
     if (!Meteor.userId()) {
       return;
     }
     return Partners.remove({
       _id: id
-    });
-  },
-  updateQerPosition: function (id, x, y, loc) {
-    var obj;
-    if (!Meteor.userId()) {
-      return;
-    }
-    obj = {};
-    obj["floorplan." + loc] = {};
-    obj["floorplan." + loc].x = x;
-    obj["floorplan." + loc].y = y;
-    return FloorplanLocation.update(id, {
-      $set: obj
     });
   }
 });
